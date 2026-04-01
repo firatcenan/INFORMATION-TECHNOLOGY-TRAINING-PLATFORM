@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT Profesyonel Eğitim Planı</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --bg2: #f5f5f4;
+    --bg3: #eeece8;
+    --text: #1a1a18;
+    --text2: #6b6b66;
+    --text3: #9b9b96;
+    --border: rgba(0,0,0,0.1);
+    --border2: rgba(0,0,0,0.18);
+    --info-bg: #E6F1FB;
+    --info-text: #185FA5;
+    --radius: 8px;
+    --radius-lg: 12px;
+    --green: #1D9E75;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1e1e1c;
+      --bg2: #2a2a27;
+      --bg3: #323230;
+      --text: #f0ede8;
+      --text2: #a0a09a;
+      --text3: #6b6b66;
+      --border: rgba(255,255,255,0.1);
+      --border2: rgba(255,255,255,0.18);
+      --info-bg: #0c2d4a;
+      --info-text: #85B7EB;
+    }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg3);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .header {
+    margin-bottom: 1.5rem;
+  }
+
+  .header h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .header p {
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  .progress-wrap {
+    background: var(--bg2);
+    border-radius: 6px;
+    height: 8px;
+    margin-top: 10px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 8px;
+    border-radius: 6px;
+    background: var(--green);
+    transition: width 0.4s ease;
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-card {
+    background: var(--bg2);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+  }
+
+  .stat-card .lbl {
+    font-size: 11px;
+    color: var(--text2);
+    margin-bottom: 4px;
+  }
+
+  .stat-card .val {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .tab-bar {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.2rem;
+  }
+
+  .tab {
+    font-size: 13px;
+    padding: 8px 16px;
+    cursor: pointer;
+    color: var(--text2);
+    border: none;
+    background: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    font-family: inherit;
+    transition: color 0.15s;
+  }
+
+  .tab.active {
+    color: var(--text);
+    border-bottom-color: var(--green);
+    font-weight: 500;
+  }
+
+  .tab:hover { color: var(--text); }
+
+  .cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 1rem;
+  }
+
+  .cat-btn {
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    background: var(--bg);
+    color: var(--text2);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+
+  .cat-btn:hover { color: var(--text); }
+
+  .cat-btn.active {
+    background: var(--info-bg);
+    color: var(--info-text);
+    border-color: transparent;
+    font-weight: 500;
+  }
+
+  .modules { display: flex; flex-direction: column; gap: 10px; }
+
+  .module-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+
+  .module-card:hover { border-color: var(--border2); }
+
+  .module-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .mod-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .mod-title { flex: 1; min-width: 0; }
+  .mod-title h3 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .mod-title span { font-size: 11px; color: var(--text2); }
+
+  .mod-meta { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+  .mini-bar {
+    width: 56px; height: 4px;
+    background: var(--bg2);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .mini-fill {
+    height: 4px;
+    border-radius: 3px;
+    background: var(--green);
+    transition: width 0.3s;
+  }
+
+  .chevron {
+    width: 16px; height: 16px;
+    color: var(--text2);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .module-card.open .chevron { transform: rotate(180deg); }
+
+  .topics {
+    display: none;
+    padding: 0 16px 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .module-card.open .topics { display: block; }
+
+  .topic-list { list-style: none; padding-top: 8px; }
+
+  .topic-item { border-bottom: 1px solid var(--border); }
+  .topic-item:last-child { border-bottom: none; }
+
+  .topic-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+  }
+
+  .check {
+    width: 18px; height: 18px;
+    border-radius: 4px;
+    border: 1.5px solid var(--border2);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .check:hover { border-color: var(--green); }
+  .check.done { background: var(--green); border-color: var(--green); }
+  .check.done svg { display: block; }
+  .check svg { display: none; width: 10px; height: 10px; }
+
+  .topic-label { font-size: 13px; color: var(--text); flex: 1; cursor: pointer; }
+  .topic-item.done .topic-label { color: var(--text2); text-decoration: line-through; }
+
+  .badge {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .expand-btn {
+    font-size: 11px;
+    color: var(--text2);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 2px 6px;
+    flex-shrink: 0;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+
+  .expand-btn:hover { color: var(--text); border-color: var(--border2); }
+
+  .topic-detail {
+    display: none;
+    padding: 8px 0 12px 26px;
+  }
+
+  .topic-item.expanded .topic-detail { display: block; }
+
+  .detail-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 10px;
+  }
+
+  .dtab {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text2);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+
+  .dtab:hover { color: var(--text); }
+  .dtab.active { background: var(--bg2); color: var(--text); font-weight: 500; border-color: var(--border2); }
+
+  .dtab-content { display: none; }
+  .dtab-content.active { display: block; }
+
+  .note-area {
+    width: 100%;
+    min-height: 70px;
+    font-size: 12px;
+    padding: 8px 10px;
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    background: var(--bg2);
+    color: var(--text);
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color 0.15s;
+  }
+
+  .note-area:focus { outline: none; border-color: var(--green); }
+
+  .resource-list { list-style: none; }
+  .resource-list li { display: flex; align-items: center; gap: 6px; padding: 5px 0; font-size: 12px; color: var(--text); border-bottom: 1px solid var(--border); }
+  .resource-list li:last-child { border-bottom: none; }
+  .resource-list a { color: var(--info-text); text-decoration: none; font-size: 12px; }
+  .resource-list a:hover { text-decoration: underline; }
+
+  .quiz-area {
+    background: var(--bg2);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+
+  .quiz-q { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 10px; line-height: 1.5; }
+
+  .quiz-opts { display: flex; flex-direction: column; gap: 5px; }
+
+  .quiz-opt {
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+
+  .quiz-opt:hover:not(:disabled) { background: var(--bg3); border-color: var(--border2); }
+  .quiz-opt:disabled { cursor: default; }
+  .quiz-opt.correct { background: #E1F5EE; color: #0F6E56; border-color: #5DCAA5; }
+  .quiz-opt.wrong { background: #FCEBEB; color: #A32D2D; border-color: #F09595; }
+
+  .quiz-result {
+    font-size: 12px;
+    margin-top: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    line-height: 1.5;
+  }
+
+  .quiz-result.correct { background: #E1F5EE; color: #0F6E56; }
+  .quiz-result.wrong { background: #FCEBEB; color: #A32D2D; }
+
+  .quiz-next {
+    font-size: 11px;
+    margin-top: 8px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border2);
+    background: var(--bg);
+    color: var(--text2);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+
+  .quiz-next:hover { color: var(--text); }
+
+  .no-quiz {
+    font-size: 12px;
+    color: var(--text2);
+    padding: 8px 0;
+  }
+
+  /* Priority view */
+  .prio-view { display: flex; flex-direction: column; gap: 8px; }
+
+  .prio-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .prio-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .prio-info { flex: 1; min-width: 0; }
+  .prio-info h4 { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+  .prio-info p { font-size: 12px; color: var(--text2); }
+
+  .prio-right { text-align: right; flex-shrink: 0; }
+  .prio-right .pct { font-size: 15px; font-weight: 600; color: var(--text); }
+  .prio-right .sub { font-size: 11px; color: var(--text2); margin-bottom: 4px; }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 600px) {
+    .stats-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .page { padding: 1.2rem 1rem 3rem; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <h1>IT Profesyonel Eğitim Planı</h1>
+    <p id="prog-text">Başlamak için konuları işaretle</p>
+    <div class="progress-wrap"><div class="progress-fill" id="main-bar" style="width:0%"></div></div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="lbl">Toplam konu</div><div class="val" id="s-total">0</div></div>
+    <div class="stat-card"><div class="lbl">Tamamlanan</div><div class="val" id="s-done">0</div></div>
+    <div class="stat-card"><div class="lbl">Kalan</div><div class="val" id="s-left">0</div></div>
+    <div class="stat-card"><div class="lbl">Quiz skoru</div><div class="val" id="s-quiz">—</div></div>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab active" onclick="switchTab('learn',this)">📚 Öğren</button>
+    <button class="tab" onclick="switchTab('priority',this)">🎯 Öncelik Sırası</button>
+  </div>
+
+  <div id="tab-learn">
+    <div class="cats" id="cats"></div>
+    <div class="modules" id="modules"></div>
+  </div>
+
+  <div id="tab-priority" class="hidden">
+    <div id="prio-list" class="prio-view"></div>
+  </div>
+</div>
+
+<script>
+const RESOURCES = {
+  'TCP/IP protokolü':[
+    {t:'Cisco TCP/IP Kılavuzu', u:'https://www.cisco.com/c/en/us/support/docs/ip/routing-information-protocol-rip/13788-3.html'},
+    {t:'RFC 791 - IP Specification', u:'https://datatracker.ietf.org/doc/html/rfc791'}
+  ],
+  'DNS (Alan adı sistemi)':[
+    {t:'DNS Nasıl Çalışır? - Cloudflare', u:'https://www.cloudflare.com/learning/dns/what-is-dns/'},
+    {t:'BIND DNS Dokümantasyonu', u:'https://bind9.readthedocs.io/'}
+  ],
+  'HTTP / HTTPS':[
+    {t:'MDN HTTP Rehberi', u:'https://developer.mozilla.org/en-US/docs/Web/HTTP'},
+    {t:'HTTP/2 Açıklaması', u:'https://http2.github.io/'}
+  ],
+  'SSL sertifika yönetimi':[
+    {t:"Let's Encrypt Başlangıç", u:'https://letsencrypt.org/getting-started/'},
+    {t:'SSL Labs Test Aracı', u:'https://www.ssllabs.com/ssltest/'}
+  ],
+  'Active Directory yapılandırma':[
+    {t:'Microsoft AD Dokümantasyonu', u:'https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/'},
+    {t:'AD Best Practices', u:'https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/'}
+  ],
+  'GPO (Grup İlkesi) yönetimi':[
+    {t:'GPO Yönetim Rehberi - Microsoft', u:'https://docs.microsoft.com/en-us/windows/security/threat-protection/'}
+  ],
+  'VMware ESXi kurulum ve yönetim':[
+    {t:'VMware ESXi Dokümantasyon', u:'https://docs.vmware.com/en/VMware-vSphere/'},
+    {t:'VMware Hands-On Labs (Ücretsiz)', u:'https://labs.hol.vmware.com/'}
+  ],
+  'FortiGate firewall yönetimi':[
+    {t:'FortiGate Administration Guide', u:'https://docs.fortinet.com/document/fortigate'},
+    {t:'Fortinet NSE Training (Ücretsiz)', u:'https://training.fortinet.com/'}
+  ],
+  'IPsec VPN kurulumu':[
+    {t:'Fortinet IPsec VPN Rehberi', u:'https://docs.fortinet.com/document/fortigate/7.4.0/administration-guide/762453'},
+    {t:'RFC 4301 - IPsec Architecture', u:'https://datatracker.ietf.org/doc/html/rfc4301'}
+  ],
+  'DKIM yapılandırma':[
+    {t:'DKIM.org Giriş', u:'https://dkim.org/'},
+    {t:'Microsoft DKIM Ayarlama', u:'https://docs.microsoft.com/en-us/microsoft-365/security/office-365-security/use-dkim-to-validate-outbound-email'}
+  ],
+  'SPF kaydı ayarlama':[
+    {t:'SPF Rehberi - Mimecast', u:'https://www.mimecast.com/content/spf-record/'},
+    {t:'SPF Record Test', u:'https://mxtoolbox.com/spf.aspx'}
+  ],
+  'DMARC politika yönetimi':[
+    {t:'DMARC.org Rehberi', u:'https://dmarc.org/overview/'},
+    {t:'DMARC Analyzer', u:'https://www.dmarcanalyzer.com/'}
+  ],
+  'PowerShell otomasyon geliştirme':[
+    {t:'Microsoft PowerShell Dokümantasyonu', u:'https://docs.microsoft.com/en-us/powershell/'},
+    {t:'PowerShell Gallery', u:'https://www.powershellgallery.com/'}
+  ],
+  'Veeam yedekleme çözümleri':[
+    {t:'Veeam Help Center', u:'https://www.veeam.com/documentation-guides-datasheets.html'},
+    {t:'Veeam Free Training', u:'https://www.veeam.com/free-training.html'}
+  ],
+  'Zabbix monitoring yönetimi':[
+    {t:'Zabbix Dokümantasyon', u:'https://www.zabbix.com/documentation/current/'},
+    {t:'Zabbix Share (Şablonlar)', u:'https://share.zabbix.com/'}
+  ],
+  'BPMN süreç modelleme':[
+    {t:'BPMN.io Online Araç (Ücretsiz)', u:'https://bpmn.io/'},
+    {t:'OMG BPMN Standartları', u:'https://www.omg.org/bpmn/'}
+  ],
+  'Agile / Scrum metodolojisi':[
+    {t:'Scrum Guide (Türkçe)', u:'https://scrumguides.org/index.html'},
+    {t:'Atlassian Agile Rehberi', u:'https://www.atlassian.com/agile'}
+  ],
+  'Figma tasarım araçları':[
+    {t:'Figma Resmi Eğitimler', u:'https://www.figma.com/resources/learn-design/'},
+    {t:'Figma Community Dosyaları', u:'https://www.figma.com/community'}
+  ],
+  'SQL temelleri':[
+    {t:'SQLZoo — Interaktif SQL Öğren', u:'https://sqlzoo.net/'},
+    {t:'W3Schools SQL Tutorial', u:'https://www.w3schools.com/sql/'}
+  ],
+  'Jira proje yönetimi':[
+    {t:'Atlassian Jira Eğitim', u:'https://university.atlassian.com/'},
+    {t:'Jira Software Dokümantasyon', u:'https://support.atlassian.com/jira-software-cloud/'}
+  ],
+  'UML diyagramları':[
+    {t:'draw.io — Ücretsiz Diyagram Aracı', u:'https://app.diagrams.net/'},
+    {t:'UML Resmi Standartlar', u:'https://www.uml.org/'}
+  ],
+};
+
+const QUIZ = {
+  'TCP/IP protokolü':[
+    {q:'TCP/IP modelinde "Transport" katmanı hangi protokolleri içerir?', opts:['TCP ve UDP','HTTP ve FTP','IP ve ICMP','DNS ve DHCP'], ans:0, exp:'Transport katmanı TCP (güvenilir) ve UDP (hızlı) protokollerini içerir.'},
+    {q:'IPv4 adreslerinde kaç bit kullanılır?', opts:['16','32','64','128'], ans:1, exp:'IPv4 adresleri 32 bit (4 oktet) kullanır. IPv6 ise 128 bit kullanır.'},
+    {q:'Hangi katman IP adresleme ve yönlendirmeden sorumludur?', opts:['Transport','Application','Network (Internet)','Data Link'], ans:2, exp:'Network/Internet katmanı IP adresleme, paket yönlendirme ve fragmentasyondan sorumludur.'},
+  ],
+  'DNS (Alan adı sistemi)':[
+    {q:'DNS\'in birincil görevi nedir?', opts:['E-posta göndermek','IP adreslerini alan adlarına çevirmek','Web sayfalarını şifrelemek','Ağ trafiğini yönlendirmek'], ans:1, exp:'DNS, alan adlarını (google.com) IP adreslerine çevirir.'},
+    {q:'Hangi DNS kaydı e-posta sunucusunu gösterir?', opts:['A','CNAME','MX','PTR'], ans:2, exp:'MX (Mail Exchanger) kaydı, alan adının e-posta sunucusunu belirtir.'},
+    {q:'Bir alan adını başka bir alan adına yönlendiren DNS kaydı hangisidir?', opts:['A','CNAME','NS','SOA'], ans:1, exp:'CNAME (Canonical Name), bir alan adını başka bir alan adına alias olarak yönlendirir.'},
+  ],
+  'Active Directory yapılandırma':[
+    {q:'Active Directory\'de kullanıcı ve bilgisayarları gruplamak için ne kullanılır?', opts:['Domain','OU (Organizational Unit)','Forest','Schema'], ans:1, exp:'OU (Organizasyon Birimi), AD nesnelerini yönetimsel amaçla gruplamak için kullanılır.'},
+    {q:'Birden fazla domain\'i birbirine bağlayan AD yapısına ne denir?', opts:['Site','Forest','Schema','Subnet'], ans:1, exp:'Forest (Orman), güven ilişkisiyle bağlı domain\'lerin üst yapısıdır.'},
+    {q:'AD\'de kullanıcı parolası gibi hassas veriler nerede saklanır?', opts:['SYSVOL','NTDS.dit','Registry','SAM (yalnızca)'], ans:1, exp:'NTDS.dit dosyası Active Directory\'nin ana veritabanıdır ve tüm nesne bilgilerini içerir.'},
+  ],
+  'GPO (Grup İlkesi) yönetimi':[
+    {q:'GPO\'lar hangi araçla yönetilir?', opts:['Active Directory Users and Computers','Group Policy Management Console (GPMC)','Server Manager','Hyper-V Manager'], ans:1, exp:'GPMC (Group Policy Management Console), GPO oluşturma, düzenleme ve bağlama için kullanılan ana araçtır.'},
+    {q:'GPO uygulama sırası (öncelik) nasıldır?', opts:['Site > Domain > OU (üstten alta)','OU > Domain > Site (alttan üste)','Alfabetik sıra','Oluşturulma tarihi'], ans:0, exp:'GPO\'lar Local > Site > Domain > OU sırasıyla uygulanır; sonraki GPO öncekini override eder.'},
+  ],
+  'FortiGate firewall yönetimi':[
+    {q:'FortiGate\'de trafik kurallarına ne ad verilir?', opts:['ACL','Firewall Policy','Rule Set','Access List'], ans:1, exp:'FortiGate\'de güvenlik kuralları "Firewall Policy" olarak adlandırılır.'},
+    {q:'UTM hangi özellikleri kapsar?', opts:['Sadece VPN','IPS, Web Filtering, Antivirus gibi güvenlik özellikleri','Yalnızca NAT','Router yönetimi'], ans:1, exp:'UTM (Unified Threat Management), IPS, web filtreleme, antivirus gibi çoklu güvenlik özelliklerini tek çatı altında sunar.'},
+    {q:'FortiGate\'de NAT türlerinden "IP Pool" ne işe yarar?', opts:['Kullanıcı kimlik doğrulaması','Birden fazla genel IP\'yi giden NAT için kullanmak','VPN tüneli açmak','DNS çözümleme'], ans:1, exp:'IP Pool, çıkış NAT işleminde birden fazla genel IP adresi havuzunu yönetmek için kullanılır.'},
+  ],
+  'IPsec VPN kurulumu':[
+    {q:'IPsec VPN\'de Phase 1 ne için kullanılır?', opts:['Veri şifreleme','Güvenli bir kanal (IKE SA) oluşturmak','NAT traversal','Routing'], ans:1, exp:'Phase 1 (IKE SA), iki uç arasında güvenli bir yönetim kanalı oluşturur. Phase 2 ise veri tünelini açar.'},
+    {q:'IPsec\'te hangi protokol veri bütünlüğü ve gizliliğini sağlar?', opts:['AH','ESP','IKE','GRE'], ans:1, exp:'ESP (Encapsulating Security Payload) hem şifreleme hem de veri bütünlüğü sağlar. AH yalnızca bütünlük sağlar.'},
+  ],
+  'DKIM yapılandırma':[
+    {q:'DKIM ne tür bir doğrulama sağlar?', opts:['Gönderen IP doğrulaması','E-posta içeriğinin dijital imzalanması','Şifreli tünel','Kullanıcı kimlik doğrulaması'], ans:1, exp:'DKIM, e-posta başlığına dijital imza ekleyerek içeriğin değiştirilmediğini kanıtlar.'},
+    {q:'DKIM public key nerede yayınlanır?', opts:['E-posta başlığında','DNS TXT kaydında','Mail sunucusu config dosyasında','SSL sertifikasında'], ans:1, exp:'DKIM public key, DNS\'de TXT kaydı olarak yayınlanır. Alıcı sunucu bu kaydı sorgulayarak imzayı doğrular.'},
+  ],
+  'SPF kaydı ayarlama':[
+    {q:'SPF kaydı hangi DNS kayıt tipinde tanımlanır?', opts:['A','MX','TXT','CNAME'], ans:2, exp:'SPF kaydı, DNS\'de TXT kaydı olarak tanımlanır.'},
+    {q:'SPF kaydında "~all" ne anlama gelir?', opts:['Tüm sunuculara izin ver','Softfail — yetkisiz sunucuları işaretle ama reddetme','Tüm sunucuları reddet','Yalnızca listeli sunuculara izin ver'], ans:1, exp:'~all softfail demektir; listelenmeyen sunucular şüpheli olarak işaretlenir ama teslim edilir. -all ise hard reject uygular.'},
+  ],
+  'VMware ESXi kurulum ve yönetim':[
+    {q:'ESXi\'de sanal makineleri yönetmek için kullanılan merkezi platform nedir?', opts:['vSphere Client','vCenter Server','vSAN','NSX'], ans:1, exp:'vCenter Server, çoklu ESXi hostları ve VM\'leri merkezi olarak yönetmek için kullanılır.'},
+    {q:'VMware\'de sanal makineler için paylaşımlı depolama alanı sağlayan teknoloji nedir?', opts:['vMotion','vSAN','DRS','HA'], ans:1, exp:'vSAN, ESXi hostlarının local disklerini birleştirerek paylaşımlı bir datastore oluşturur.'},
+  ],
+  'Agile / Scrum metodolojisi':[
+    {q:'Scrum\'da kısa geliştirme döngüsüne ne ad verilir?', opts:['Release','Milestone','Sprint','Phase'], ans:2, exp:'Sprint, genellikle 2-4 haftalık kısa geliştirme döngüsüdür.'},
+    {q:'Scrum\'da ürün özelliklerinin önceliklendirilmiş listesi nedir?', opts:['Sprint Backlog','Product Backlog','Kanban Board','User Story Map'], ans:1, exp:'Product Backlog, tüm ürün özelliklerinin önceliklendirilmiş listesidir.'},
+    {q:'Daily Scrum\'ın temel amacı nedir?', opts:['Sprint planlamak','Haftalık ilerleme raporu vermek','Ekip senkronizasyonu ve engelleri belirlemek','Müşteriyle demo yapmak'], ans:2, exp:'Daily Scrum (15 dk), ekibin günlük senkronizasyonu ve bloklayan engelleri erken tespit etmek içindir.'},
+  ],
+  'BPMN süreç modelleme':[
+    {q:'BPMN\'de bir sürecin başlangıç noktasını gösteren sembol hangisidir?', opts:['Dikdörtgen','Daire (ince çizgi)','Elmas','Kalın çizgili daire'], ans:1, exp:'İnce çizgili daire (Start Event) BPMN\'de bir sürecin başlangıcını temsil eder.'},
+    {q:'BPMN\'de karar noktası hangi şekille gösterilir?', opts:['Daire','Dikdörtgen','Elmas (Diamond)','Paralel kenar'], ans:2, exp:'Elmas (Gateway) şekli, bir süreçteki karar noktalarını ve dallanmaları temsil eder.'},
+  ],
+  'Figma tasarım araçları':[
+    {q:'Figma\'da "Component" ne işe yarar?', opts:['Renk paletini saklar','Yeniden kullanılabilir tasarım öğeleri oluşturur','Animasyon ekler','Prototip bağlantısı kurar'], ans:1, exp:'Component\'ler, yeniden kullanılabilir UI öğeleridir. Ana component değişince tüm instance\'lar güncellenir.'},
+    {q:'Figma\'da birden fazla kullanıcı aynı anda çalışabilir mi?', opts:['Hayır, tek kullanıcı desteği var','Evet, gerçek zamanlı işbirliği desteklenir','Yalnızca Pro planda','Yalnızca görüntüleme modunda'], ans:1, exp:'Figma, bulut tabanlı gerçek zamanlı işbirliğini destekler; birden fazla kullanıcı aynı anda aynı dosyada çalışabilir.'},
+  ],
+  'PowerShell otomasyon geliştirme':[
+    {q:'PowerShell\'de bir komut çıktısını bir sonraki komuta aktarmak için ne kullanılır?', opts:['&&','||(pipe)','> (redirect)','| (pipe)'], ans:3, exp:'Pipe (|) operatörü, bir cmdlet\'in çıktısını nesne olarak bir sonraki cmdlet\'e iletir.'},
+    {q:'Tüm çalışan servisleri listelemek için hangi cmdlet kullanılır?', opts:['Get-Process','Get-Service','Show-Service','List-Service'], ans:1, exp:'Get-Service tüm Windows servislerini listeler. -Status Running parametresi ile filtrelenebilir.'},
+  ],
+};
+
+const DATA = [
+  {id:'net', cat:'Ağ Temelleri', icon:'🌐', color:'#E6F1FB', prio:1, topics:[
+    {t:'TCP/IP protokolü',d:'Orta'},{t:'DNS (Alan adı sistemi)',d:'Orta'},{t:'HTTP / HTTPS',d:'Kolay'},
+    {t:'FTP protokolü',d:'Kolay'},{t:'SMTP (E-posta iletimi)',d:'Kolay'},{t:'DHCP yapılandırma',d:'Kolay'},
+    {t:'İç/dış DNS yönlendirmesi',d:'Orta'},{t:'SSL sertifika yönetimi',d:'Zor'},{t:'IIS web sunucusu yönetimi',d:'Orta'},
+  ]},
+  {id:'infra', cat:'Sunucu & Altyapı', icon:'🖥️', color:'#EAF3DE', prio:2, topics:[
+    {t:'HPE / Dell donanım yönetimi',d:'Orta'},{t:'Cisco ağ cihazları',d:'Zor'},
+    {t:'Windows Server 2019/2022 kurulumu',d:'Orta'},{t:'Windows Server troubleshooting',d:'Zor'},
+    {t:'Active Directory yapılandırma',d:'Zor'},{t:'Domain Controller yönetimi',d:'Zor'},
+    {t:'GPO (Grup İlkesi) yönetimi',d:'Zor'},{t:'DHCP & DNS sunucu yapılandırma',d:'Orta'},
+  ]},
+  {id:'virt', cat:'Sanallaştırma & Depolama', icon:'⚙️', color:'#FAEEDA', prio:3, topics:[
+    {t:'VMware ESXi kurulum ve yönetim',d:'Zor'},{t:'vCenter Server yönetimi',d:'Zor'},
+    {t:'Hyper-V yapılandırma',d:'Orta'},{t:'SAN storage sistemleri',d:'Zor'},
+    {t:'NAS storage yönetimi',d:'Orta'},{t:'Veeam yedekleme çözümleri',d:'Zor'},
+    {t:'Disaster Recovery süreçleri',d:'Zor'},
+  ]},
+  {id:'netadv', cat:'İleri Ağ & Firewall', icon:'🔒', color:'#FCEBEB', prio:4, topics:[
+    {t:'VLAN yapılandırma',d:'Orta'},{t:'Routing protokolleri',d:'Zor'},
+    {t:'LACP / STP yapılandırma',d:'Zor'},{t:'WAN bağlantı yönetimi',d:'Orta'},
+    {t:'FortiGate firewall yönetimi',d:'Zor'},{t:'Firewall policy yazımı',d:'Zor'},
+    {t:'NAT yapılandırmaları',d:'Orta'},{t:'IPsec VPN kurulumu',d:'Zor'},
+    {t:'SSL VPN kurulumu',d:'Orta'},{t:'IPS yönetimi',d:'Zor'},
+    {t:'Web Filtering & App Control',d:'Orta'},{t:'Log analizi & güvenlik olayları',d:'Zor'},
+  ]},
+  {id:'m365', cat:'Microsoft 365 & E-posta', icon:'📧', color:'#EEEDFE', prio:5, topics:[
+    {t:'M365 Admin Center yönetimi',d:'Orta'},{t:'Exchange Online yönetimi',d:'Orta'},
+    {t:'Mail flow yapılandırma',d:'Orta'},{t:'DKIM yapılandırma',d:'Orta'},
+    {t:'SPF kaydı ayarlama',d:'Kolay'},{t:'DMARC politika yönetimi',d:'Orta'},
+    {t:'Dağıtım grupları yönetimi',d:'Kolay'},{t:'Shared mailbox yönetimi',d:'Kolay'},
+  ]},
+  {id:'linux', cat:'Linux & Otomasyon', icon:'🐧', color:'#E1F5EE', prio:6, topics:[
+    {t:'Ubuntu kurulum ve yönetim',d:'Orta'},{t:'Debian / CentOS temel yönetimi',d:'Orta'},
+    {t:'Linux servis yönetimi (systemd)',d:'Orta'},{t:'PRTG monitoring kurulumu',d:'Orta'},
+    {t:'Zabbix monitoring yönetimi',d:'Zor'},{t:'PowerShell otomasyon geliştirme',d:'Zor'},
+    {t:'Bash scripting temelleri',d:'Orta'},
+  ]},
+  {id:'ba', cat:'İş Analizi & Proje', icon:'📋', color:'#FBEAF0', prio:7, topics:[
+    {t:'BPMN süreç modelleme',d:'Orta'},{t:'UML diyagramları',d:'Orta'},{t:'SQL temelleri',d:'Orta'},
+    {t:'Agile / Scrum metodolojisi',d:'Kolay'},{t:'CBAP sertifika hazırlığı',d:'Zor'},
+    {t:'PMI-PBA sertifika hazırlığı',d:'Zor'},{t:'Jira proje yönetimi',d:'Kolay'},
+    {t:'Confluence dokümantasyon',d:'Kolay'},{t:'Trello board yönetimi',d:'Kolay'},
+  ]},
+  {id:'ux', cat:'UX/UI & Prototipleme', icon:'🎨', color:'#FAECE7', prio:8, topics:[
+    {t:'Figma tasarım araçları',d:'Orta'},{t:'Balsamiq wireframe hazırlama',d:'Kolay'},
+    {t:'Axure prototipleme',d:'Zor'},{t:'UX odaklı tasarım süreçleri',d:'Orta'},
+    {t:'UI Flow diyagramları hazırlama',d:'Orta'},{t:'Kullanıcı testi metodolojisi',d:'Orta'},
+  ]},
+];
+
+const PRIO_REASONS = [
+  'Tüm diğer konuların temeli — buradan başla',
+  'Ağ temelinin üzerine inşa edilir, iş hayatında en kritik',
+  'Sunucu altyapısından sonra gelen doğal adım',
+  'Temel ağ bilgisi gerektiren ileri güvenlik konuları',
+  'Kurumsal ortamda günlük kullanılan sistem',
+  'Otomasyon ve monitoring ile verimliliği katlıyorsun',
+  'Teknik altyapı bittikten sonra süreci yönet',
+  'Tasarım ve ürün geliştirme süreçlerini tamamlar',
+];
+
+const PRIO_COLORS = ['#1D9E75','#378ADD','#EF9F27','#D85A30','#7F77DD','#639922','#D4537E','#888780'];
+const PRIO_LIGHT = ['#E1F5EE','#E6F1FB','#FAEEDA','#FAECE7','#EEEDFE','#EAF3DE','#FBEAF0','#F1EFE8'];
+const DIFF = {Kolay:'#0F6E56', Orta:'#185FA5', Zor:'#A32D2D'};
+const DIFF_BG = {Kolay:'#E1F5EE', Orta:'#E6F1FB', Zor:'#FCEBEB'};
+
+// --- State (localStorage persistence) ---
+function loadState() {
+  try {
+    const s = localStorage.getItem('it_egitim_state');
+    return s ? JSON.parse(s) : {};
+  } catch(e) { return {}; }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('it_egitim_state', JSON.stringify({done, notes, quizStats}));
+  } catch(e) {}
+}
+
+let saved = loadState();
+let done = saved.done || {};
+let notes = saved.notes || {};
+let quizStats = saved.quizStats || {total:0, correct:0};
+let quizState = {};
+let activeFilter = 'all';
+let openCards = {};
+let expandedTopics = {};
+let activeDetailTab = {};
+let currentTab = 'learn';
+
+function key(mid, i) { return mid + '__' + i; }
+function totalTopics() { return DATA.reduce((a, m) => a + m.topics.length, 0); }
+function doneCount() { return Object.values(done).filter(Boolean).length; }
+function moduleDone(m) { return m.topics.filter((_, i) => done[key(m.id, i)]).length; }
+
+function updateStats() {
+  const t = totalTopics(), d = doneCount();
+  document.getElementById('s-total').textContent = t;
+  document.getElementById('s-done').textContent = d;
+  document.getElementById('s-left').textContent = t - d;
+  const pct = Math.round(d / t * 100);
+  document.getElementById('main-bar').style.width = pct + '%';
+  document.getElementById('prog-text').textContent =
+    pct === 0 ? 'Başlamak için konuları işaretle' :
+    pct === 100 ? 'Tebrikler! Tüm konular tamamlandı 🎉' :
+    pct + '% tamamlandı — devam et!';
+  if (quizStats.total > 0) {
+    document.getElementById('s-quiz').textContent = Math.round(quizStats.correct / quizStats.total * 100) + '%';
+  }
+  saveState();
+}
+
+function switchTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-learn').classList.toggle('hidden', tab !== 'learn');
+  document.getElementById('tab-priority').classList.toggle('hidden', tab !== 'priority');
+  if (tab === 'priority') renderPriority();
+}
+
+function renderPriority() {
+  const el = document.getElementById('prio-list');
+  el.innerHTML = '';
+  DATA.slice().sort((a, b) => a.prio - b.prio).forEach((m, i) => {
+    const md = moduleDone(m), mt = m.topics.length, pct = Math.round(md / mt * 100);
+    const card = document.createElement('div');
+    card.className = 'prio-card';
+    card.innerHTML = `
+      <div class="prio-num" style="background:${PRIO_LIGHT[i]};color:${PRIO_COLORS[i]}">${i+1}</div>
+      <div class="prio-info">
+        <h4>${m.icon} ${m.cat}</h4>
+        <p>${PRIO_REASONS[i]}</p>
+      </div>
+      <div class="prio-right">
+        <div class="pct">${pct}%</div>
+        <div class="sub">${md}/${mt} konu</div>
+        <div class="mini-bar" style="width:80px">
+          <div class="mini-fill" style="width:${pct}%;background:${PRIO_COLORS[i]}"></div>
+        </div>
+      </div>`;
+    el.appendChild(card);
+  });
+}
+
+function getQuiz(topicName) {
+  const qs = QUIZ[topicName];
+  if (!qs || !qs.length) return null;
+  if (!quizState[topicName]) quizState[topicName] = {idx:0, answered:false};
+  return {q: qs[quizState[topicName].idx % qs.length], st: quizState[topicName]};
+}
+
+function renderQuizInto(container, topicName) {
+  const data = getQuiz(topicName);
+  if (!data) {
+    container.innerHTML = '<p class="no-quiz">Bu konu için henüz soru eklenmemiş.</p>';
+    return;
+  }
+  const {q, st} = data;
+  const qs = QUIZ[topicName];
+  let html = `<div class="quiz-area"><div class="quiz-q">${q.q}</div><div class="quiz-opts">`;
+  q.opts.forEach((o, i) => {
+    let cls = '';
+    if (st.answered) cls = i === q.ans ? 'correct' : (st.chosen === i ? 'wrong' : '');
+    html += `<button class="quiz-opt ${cls}" onclick="answerQuiz('${topicName}',${i})" ${st.answered?'disabled':''}>${o}</button>`;
+  });
+  html += '</div>';
+  if (st.answered) {
+    const ok = st.chosen === q.ans;
+    html += `<div class="quiz-result ${ok?'correct':'wrong'}">${ok?'✓ Doğru!':'✗ Yanlış.'} ${q.exp}</div>`;
+    if (qs && st.idx + 1 < qs.length) {
+      html += `<button class="quiz-next" onclick="nextQuiz('${topicName}')">Sonraki soru →</button>`;
+    } else {
+      html += `<button class="quiz-next" onclick="resetQuiz('${topicName}')">Başa dön</button>`;
+    }
+  }
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function answerQuiz(topicName, chosen) {
+  const st = quizState[topicName];
+  if (!st || st.answered) return;
+  st.answered = true;
+  st.chosen = chosen;
+  quizStats.total++;
+  const qs = QUIZ[topicName];
+  if (qs && chosen === qs[st.idx % qs.length].ans) quizStats.correct++;
+  const container = document.querySelector(`[data-quiz="${CSS.escape(topicName)}"]`);
+  if (container) renderQuizInto(container, topicName);
+  updateStats();
+}
+
+function nextQuiz(topicName) {
+  const st = quizState[topicName];
+  if (st) { st.idx++; st.answered = false; st.chosen = undefined; }
+  const container = document.querySelector(`[data-quiz="${CSS.escape(topicName)}"]`);
+  if (container) renderQuizInto(container, topicName);
+}
+
+function resetQuiz(topicName) {
+  quizState[topicName] = {idx:0, answered:false};
+  const container = document.querySelector(`[data-quiz="${CSS.escape(topicName)}"]`);
+  if (container) renderQuizInto(container, topicName);
+}
+
+function toggleDone(k) {
+  done[k] = !done[k];
+  render();
+}
+
+function toggleExpand(k) {
+  expandedTopics[k] = !expandedTopics[k];
+  render();
+}
+
+function setDTab(k, tab) {
+  activeDetailTab[k] = tab;
+  render();
+}
+
+function saveNote(k, val) {
+  notes[k] = val;
+  saveState();
+}
+
+function render() {
+  const catsEl = document.getElementById('cats');
+  const modsEl = document.getElementById('modules');
+  catsEl.innerHTML = '';
+  modsEl.innerHTML = '';
+
+  // Category filters
+  const allBtn = document.createElement('button');
+  allBtn.className = 'cat-btn' + (activeFilter === 'all' ? ' active' : '');
+  allBtn.textContent = 'Tümü';
+  allBtn.onclick = () => { activeFilter = 'all'; render(); };
+  catsEl.appendChild(allBtn);
+
+  DATA.forEach(m => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-btn' + (activeFilter === m.id ? ' active' : '');
+    btn.textContent = m.cat;
+    btn.onclick = () => { activeFilter = m.id; render(); };
+    catsEl.appendChild(btn);
+  });
+
+  const filtered = activeFilter === 'all' ? DATA : DATA.filter(m => m.id === activeFilter);
+
+  filtered.forEach(m => {
+    const md = moduleDone(m), mt = m.topics.length, pct = Math.round(md / mt * 100);
+    const card = document.createElement('div');
+    card.className = 'module-card' + (openCards[m.id] ? ' open' : '');
+
+    const topicsHTML = m.topics.map((tp, i) => {
+      const k = key(m.id, i);
+      const isDone = done[k] || false;
+      const isExp = expandedTopics[k] || false;
+      const hasRes = !!RESOURCES[tp.t];
+      const hasQuiz = !!(QUIZ[tp.t] && QUIZ[tp.t].length);
+      const dtab = activeDetailTab[k] || 'notes';
+      const noteVal = (notes[k] || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+      const res = hasRes ? RESOURCES[tp.t] : [];
+
+      const resHTML = hasRes ? `<div class="dtab-content${dtab==='res'?' active':''}" data-dtab="${k}-res">
+        <ul class="resource-list">${res.map(r=>`<li>→ <a href="${r.u}" target="_blank">${r.t}</a></li>`).join('')}</ul>
+      </div>` : '';
+
+      const quizHTML = hasQuiz ? `<div class="dtab-content${dtab==='quiz'?' active':''}" data-dtab="${k}-quiz">
+        <div data-quiz="${tp.t.replace(/"/g,'&quot;')}"></div>
+      </div>` : '';
+
+      return `<li class="topic-item${isDone?' done':''}${isExp?' expanded':''}" data-key="${k}">
+        <div class="topic-row">
+          <div class="check${isDone?' done':''}" onclick="toggleDone('${k}')">
+            <svg viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg>
+          </div>
+          <span class="topic-label" onclick="toggleDone('${k}')">${tp.t}</span>
+          <span class="badge" style="background:${DIFF_BG[tp.d]};color:${DIFF[tp.d]}">${tp.d}</span>
+          <button class="expand-btn" onclick="toggleExpand('${k}')">${isExp?'▲':'▼'}</button>
+        </div>
+        <div class="topic-detail">
+          <div class="detail-tabs">
+            <button class="dtab${dtab==='notes'?' active':''}" onclick="setDTab('${k}','notes')">📝 Not</button>
+            ${hasRes?`<button class="dtab${dtab==='res'?' active':''}" onclick="setDTab('${k}','res')">🔗 Kaynaklar</button>`:''}
+            ${hasQuiz?`<button class="dtab${dtab==='quiz'?' active':''}" onclick="setDTab('${k}','quiz')">❓ Quiz</button>`:''}
+          </div>
+          <div class="dtab-content${dtab==='notes'?' active':''}" data-dtab="${k}-notes">
+            <textarea class="note-area" placeholder="Bu konu hakkında notlarını buraya yaz..." onchange="saveNote('${k}',this.value)">${noteVal}</textarea>
+          </div>
+          ${resHTML}${quizHTML}
+        </div>
+      </li>`;
+    }).join('');
+
+    card.innerHTML = `
+      <div class="module-header">
+        <div class="mod-icon" style="background:${m.color}">${m.icon}</div>
+        <div class="mod-title"><h3>${m.cat}</h3><span>${mt} konu</span></div>
+        <div class="mod-meta">
+          <span style="font-size:12px;color:var(--text2)">${md}/${mt}</span>
+          <div class="mini-bar"><div class="mini-fill" style="width:${pct}%"></div></div>
+        </div>
+        <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <polyline points="4,6 8,10 12,6"/>
+        </svg>
+      </div>
+      <div class="topics"><ul class="topic-list">${topicsHTML}</ul></div>`;
+
+    card.querySelector('.module-header').addEventListener('click', () => {
+      openCards[m.id] = !openCards[m.id];
+      card.classList.toggle('open');
+    });
+
+    modsEl.appendChild(card);
+
+    // Render quiz widgets
+    card.querySelectorAll('[data-quiz]').forEach(el => {
+      renderQuizInto(el, el.getAttribute('data-quiz'));
+    });
+  });
+
+  updateStats();
+}
+
+render();
+</script>
+</body>
+</html>
